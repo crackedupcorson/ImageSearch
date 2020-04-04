@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+PIL="*"
+flickrapi="*"
+pygeocoder="*"
+shapely="*"
+geopy="*"
+glob="*"
+httplib="*"
+numpy="*"
+opencv-python="*"
+matplotlib="*"
+shutil="*"
+
+[dev-packages]
+pytest = "*"
