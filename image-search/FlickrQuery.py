@@ -9,17 +9,15 @@ from time import strptime, struct_time
 import helpers
 
 
-class Query:
+class FlickrQuery:
 
     def run(self, search_params):
         time_date = datetime
         estLocation = search_params['estLocation']
         relSearchTags = search_params['tags']
-        image = search_params['Image']
+        image = search_params['image_path']
         centerLocation = Geocoder.geocode(estLocation)
         locationCoOrd = centerLocation.coordinates
-        print(locationCoOrd)
-
         try:
             for (k, v) in Image.open(image)._getexif().items():  # Kept in for testing purposes, and managing data
                 print('%s = %s' % (TAGS.get(k), v))
