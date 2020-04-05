@@ -1,3 +1,5 @@
+import os
+
 from PIL.ExifTags import TAGS
 
 def get_field(exif, field):
@@ -27,5 +29,12 @@ def get_season(adate):
     return season
 
 def is_estimated_location_saved(location):
-    with open("", "a") as myfile:
-        myfile.write("appended text")
+    pass
+
+
+def get_api_keys():
+    flickr_key = os.environ['flickr_key']
+    flickr_secret = os.environ['flickr_secret']
+    google_maps_key = os.environ['google_maps_key']
+    api_keys = {"flickr_key": flickr_key, "flickr_secret": flickr_secret,"google_maps_key": google_maps_key}
+    return api_keys

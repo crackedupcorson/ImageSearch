@@ -37,15 +37,8 @@ class FlickrQuery:
         # Determine time of day from hour
         # helpers.get_time_of_day(str(time.strftime("%H", dtime)))
 
-        ###########################################################################
-        # Section for image query
-        # flickr information: 
-        # key: 73bd8fc4f4657de00e9f74dc75d1262a
-        # secret: 0a8620b19f669bd0
-        # flickr app address: www.flickr.com/services/apps/72157638043790766/   
-        ###########################################################################
-        api_key = "73bd8fc4f4657de00e9f74dc75d1262a"  # API key
-        secret = "0a8620b19f669bd0"  # shared "secret"
+        api_key = helpers.get_api_keys()["flickr_key"]
+        secret = helpers.get_api_keys()["flickr_secret"]
         try:  # Try to search, (with an except fro FlickrErrors) (works like a try catch)
             flickr = flickrapi.FlickrAPI(api_key, secret)  # Search for photos
             id_list = []
@@ -124,7 +117,8 @@ class FlickrQuery:
             id_list.append(photo_id)
 
     def get_coordinates(self, estLocation):
-        gmaps = googlemaps.Client(key='AIzaSyBpQdpSTMNZNKYzrrMoGqvLlPIPaaKrPyQ')
+        google_maps_key = helpers.get_api_keys()["google_maps_key"]
+        gmaps = googlemaps.Client(key=google_maps_key)
         centerLocation = gmaps.geocode(estLocation)
         location = centerLocation[0]['geometry']['location']
         return location
