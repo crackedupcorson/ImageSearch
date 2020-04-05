@@ -1,0 +1,6 @@
+dublin
+paris
+new york
+london
+berlin
+barcelona

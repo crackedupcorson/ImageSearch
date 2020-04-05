@@ -17,10 +17,15 @@ def get_time_of_day(atime):
 
 def get_season(adate):
     if "November" in adate or "December" in adate or "January" in adate:
-        dseason = "Winter"
+        season = "Winter"
     if "March" in adate or "February" in adate or "April" in adate:
-        dseason = "Spring"
+        season = "Spring"
     if "May" in adate or "June" in adate or "July" in adate:
-        dseason = "Summer"
+        season = "Summer"
     if "August" in adate or "September" in adate or "October" in adate:
-        dseason = "Autumn"
+        season = "Autumn"
+    return season
+
+def is_estimated_location_saved(location):
+    with open("", "a") as myfile:
+        myfile.write("appended text")

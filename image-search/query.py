@@ -2,6 +2,7 @@ import glob
 import os
 from FlickrQuery import FlickrQuery
 
+
 class Query:
     def run(self, search_params):
         for image in glob.glob('original/*.jpg'):  # Get any images uploaded.
@@ -10,6 +11,3 @@ class Query:
             search_params.update({"image_path": 'original/origin.jpg'})
             fq = FlickrQuery()
             fq.run(search_params)
-
-
-
