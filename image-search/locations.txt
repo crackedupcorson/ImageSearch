@@ -1,6 +1,1 @@
-dublin
-paris
-new york
-london
-berlin
-barcelona
+dublin:53.3498053:-6.2603097 

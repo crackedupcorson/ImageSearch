@@ -46,16 +46,15 @@ class FlickrQuery:
             lat = google_location['lat']
             long = google_location['lng']
             originPoint = Point(lat, long)
-            buffer_zone = originPoint.buffer(1)
+            buffer_zone = originPoint.buffer(1.5, 1)
             bbox_bounds = buffer_zone.bounds
             bbox_bounds_str = str(round(bbox_bounds[0],2)) + "," + str(round(bbox_bounds[1],2)) + "," + str(round(bbox_bounds[2],2)) + "," + str(round(bbox_bounds[3],2))
             for photo in flickr.walk(flickrKey=api_key,
                                      ispublic="1",  # Returns only public photos
                                      media="photos",
-                                     # text=  #This parameter seriously limits results. DO NOT USE.
-                                     hasgeo="1",  # Hasgeo 1 = has gps tags, 0 = does not have gps tags
+                                     hasgeo="1",
                                      tags=relSearchTags,  # Tags included (coming from tag.txt)
-                                     accuracy="11",  # 1 - 16. Higher number = more accurate
+                                     accuracy="10",  # 1 - 16. Higher number = more accurate
                                      content_type="1",
                                      bbox=bbox_bounds_str,
                                      extras="date_upload, views",
@@ -65,7 +64,7 @@ class FlickrQuery:
                 try:
                     photoLocation = flickr.photos_geo_getLocation(photo_id=photo_id, accuracy="6")
                 except Exception as e:
-                    print("Photo {} has lost GPS info".format(photo_id))
+                    print("Photo {} has lost GPS info.".format(photo_id))
                     continue
                 lat2 = float(photoLocation[0][0].attrib["latitude"])
                 long2 = float(photoLocation[0][0].attrib["longitude"])
@@ -73,11 +72,7 @@ class FlickrQuery:
                 long3 = round(long2, 6)
                 search_point = Point(lat2, long2)
                 address = lat3, long3
-                # Width of buffer around centerLocation(estimated location)
-                # Check if any of the "photoLocation" photos are inside the buffer around center location.
-                print(count)
                 if search_point.within(buffer_zone):
-                    print(photo_id)
                     results = flickr.photos_getSizes(api_key=api_key, photo_id=photo_id, extras="url_o")
                     results1 = results.find("sizes").findall("size")[0].get('source')
                     urls = results1[:-6] + ".jpg"  # Strip url of the _s at end, to give full image.
@@ -92,8 +87,7 @@ class FlickrQuery:
                     compare_iterator = os.walk("compare/")
                     path, dirs, files = compare_iterator.__next__()
                     file_count = len(files)  # Current amount of files in folder.
-                    limit = 50  # Amount of files in folder(limiting how many to download)
-                    print("File count is currently {}".format(file_count))
+                    limit = search_params['limit']
                     if file_count < limit:
                         self.download_image(address, file_count, link, urls, photo_id, id_list)
                     else:
@@ -117,8 +111,5 @@ class FlickrQuery:
             id_list.append(photo_id)
 
     def get_coordinates(self, estLocation):
-        google_maps_key = helpers.get_api_keys()["google_maps_key"]
-        gmaps = googlemaps.Client(key=google_maps_key)
-        centerLocation = gmaps.geocode(estLocation)
-        location = centerLocation[0]['geometry']['location']
+        location = helpers.is_estimated_location_saved(estLocation)
         return location

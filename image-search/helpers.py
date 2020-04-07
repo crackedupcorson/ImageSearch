@@ -1,5 +1,6 @@
 import os
 
+import googlemaps
 from PIL.ExifTags import TAGS
 
 def get_field(exif, field):
@@ -29,8 +30,33 @@ def get_season(adate):
     return season
 
 def is_estimated_location_saved(location):
-    pass
+    google_maps_key = get_api_keys()["google_maps_key"]
+    gmaps = googlemaps.Client(key=google_maps_key)
 
+    location = location.lower()
+    with open("locations.txt", "r+") as file:
+        if os.stat('locations.txt').st_size == 0:
+            centerLocation = gmaps.geocode(location)
+            co_ords = centerLocation[0]['geometry']['location']
+            string = location + ":" + str(co_ords['lat']) + ":" + str(co_ords['lng']) + " "
+            file.write(string)
+            file.write("\n")
+            return co_ords
+        else:
+            for line in file:
+                if location in line:
+                    location_string = line
+                    lat = location_string.split(':')[1]
+                    lng = location_string.split(":")[2]
+                    return {"lat": float(lat), "lng": float(lng)}
+
+                else:
+                    centerLocation = gmaps.geocode(location)
+                    co_ords = centerLocation[0]['geometry']['location']
+                    string = location+":"+str(co_ords['lat'])+":"+str(co_ords['lng'])+" "
+                    file.write(string)
+                    file.write("\n")
+                    return location
 
 def get_api_keys():
     flickr_key = os.environ['flickr_key']
