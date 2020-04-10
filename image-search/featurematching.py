@@ -8,7 +8,7 @@ import gc
 class FeatureMatching:
 
     def compare_photos(self):
-        MIN_MATCH_COUNT = 10  # Min amount of keypoints matched, for image considered to be alike.
+        MIN_MATCH_COUNT = 20  # Min amount of keypoints matched, for image considered to be alike.
 
         original_image = cv2.imread('original/origin.jpg', 0)
         for image in glob.iglob("compare/*.jpg"):
@@ -16,23 +16,20 @@ class FeatureMatching:
             comparison_image = cv2.imread(image)
 
             # Initiate SIFT detector
-            orb = cv2.KAZE_create()
+            orb = cv2.ORB_create()
 
             # find the keypoints and descriptors with SIFT
             kp1, des1 = orb.detectAndCompute(original_image, None)
             kp2, des2 = orb.detectAndCompute(comparison_image, None)
 
-            FLANN_INDEX_KDTREE = 0
-            index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=2)
-            search_params = dict(checks=250)  # higher the check, better the precision
-
-            # Flann (Fast Library for Approximate Nearest Neighbors)
-            flann_matcher = cv2.FlannBasedMatcher(index_params, search_params)
-
-            matches = flann_matcher.knnMatch(des1, des2, k=2)  # Uses K-nearest neighbour
+            # FLANN parameters
+            #FLANN_INDEX_KDTREE = 1
+            #index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+            #search_params = dict(checks=50)  # or pass empty dictionary
+            bf = cv2.BFMatcher()
+            matches = bf.knnMatch(des1, des2, k=2)
 
 
-            # store all the good matches with regards to Lowe's ratio test. (David Lowe being the creator of SIFT)
             good_matches = []
             for m, n in matches:
                 if m.distance < 0.7 * n.distance:
